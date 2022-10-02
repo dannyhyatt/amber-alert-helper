@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.amber,
       ),
       home: const MyHomePage(title: 'Amber Alert Helper Demo'),
     );
@@ -41,9 +42,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String texts = 'Press Camera button to get started';
   CameraImage? _cameraImage;
-  bool _cameraStarted = false;
+  bool _buttonPressed = false;
+  String plate = "No plate right now";
+  late BuildContext _ctx;
 
   void _incrementCounter() {
+    if (_buttonPressed) return;
+    _buttonPressed = true;
     () async {
       print('running');
       await Firebase.initializeApp(
@@ -51,7 +56,17 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 
       FirebaseDatabase database = FirebaseDatabase.instance;
-      database.ref().get().then((value) => print(value.value));
+      database.ref().get().then((value) {
+        plate = value.value.toString();
+
+        setState(() {
+          if (plate != "No plate right now") {
+            plate = plate.substring(8, plate.length - 1);
+          }
+        });
+        print(plate);
+      });
+      // try {
 
       // final functions = FirebaseFunctions.instance;
       // try {
@@ -109,14 +124,42 @@ class _MyHomePageState extends State<MyHomePage> {
           texts = '';
           for (TextLine line in block.lines) {
             // Same getters as TextBlock
-            for (TextElement element in line.elements) {
-              // Same getters as TextBlock
-              print('TEXTS: ${element.text}');
-              texts += '${element.text}\n';
-            }
+            // for (TextElement element in line.elements) {
+            //   // Same getters as TextBlock
+            print('TEXTS: ${line.text}');
+            texts += '${line.text}\n';
+            // }
+          }
+          print('plate: $plate');
+          print('texts: ${texts.replaceAll(' ', '').replaceAll('-', '')}');
+          if (texts.replaceAll(' ', '').replaceAll('-', '').contains(plate)) {
+            print("FOUND");
+            // show the dialog
+            FirebaseDatabase.instance.ref().update({"found": true});
+            showDialog(
+              context: _ctx,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Found plate!"),
+                  content: Text(
+                      "Thank you for using Amber alert helper, we have reported your sighting."),
+                  actions: [
+                    TextButton(
+                      child: Text("OK"),
+                      onPressed: () {},
+                    ),
+                  ],
+                );
+                ;
+              },
+            );
           }
           setState(() {});
         }
+      });
+
+      setState(() {
+        texts = 'Ready to scan';
       });
       textRecognizer.close();
     }();
@@ -124,6 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    _ctx = context;
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -135,16 +179,21 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              texts,
+              'Looking for plate: ${plate}',
+            ),
+            Text(
+              texts != "Ready to scan" ? 'Found: ${texts}' : texts,
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.camera_alt),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton: _buttonPressed
+          ? Container()
+          : FloatingActionButton(
+              onPressed: _incrementCounter,
+              tooltip: 'Increment',
+              child: const Icon(Icons.camera_alt),
+            ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
