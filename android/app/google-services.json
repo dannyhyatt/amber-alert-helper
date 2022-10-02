@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "864510601792",
+    "project_id": "license-plate-detector-1b4ea",
+    "storage_bucket": "license-plate-detector-1b4ea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:864510601792:android:6d7fea3fa535d44ed3cda5",
+        "android_client_info": {
+          "package_name": "com.example.licenseplatedetector"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "864510601792-oqhs7oipodjgpevv8bpvns2r63jjin2j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJ1zfWayHJdR8A0aCsxqqXKgqphh8uIEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "864510601792-oqhs7oipodjgpevv8bpvns2r63jjin2j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
