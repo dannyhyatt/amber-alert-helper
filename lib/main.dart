@@ -1,8 +1,14 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
 import 'firebase_options.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:camera/camera.dart';
+// import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +25,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Amber Alert Helper Demo'),
     );
   }
 }
@@ -33,54 +39,91 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  String texts = 'Press Camera button to get started';
+  CameraImage? _cameraImage;
+  bool _cameraStarted = false;
 
   void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
     () async {
       print('running');
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
+
+      FirebaseDatabase database = FirebaseDatabase.instance;
+      database.ref().get().then((value) => print(value.value));
+
+      // final functions = FirebaseFunctions.instance;
+      // try {
+      //   final result =
+      //       await FirebaseFunctions.instance.httpsCallable('helloWorld').call();
+      //   print('result: ${result.data}');
+      // } on FirebaseFunctionsException catch (error) {
+      //   print(error.code);
+      //   print(error.details);
+      //   print(error.message);
+      // }
+
+      // final fcmToken = await FirebaseMessaging.instance.getToken();
+      // print('token $fcmToken');
+
+      // FirebaseMessaging.onBackgroundMessage(
+      //     (message) async => print('MESSAGE ${message.data}'));
+      // FirebaseMessaging.onMessage
+      //     .listen((RemoteMessage msg) async => print('message: ${msg.data}'));
+      // FirebaseMessaging.instance.requestPermission();
+
+      CameraController? _camera;
+
+      List<CameraDescription> cameras = await availableCameras();
+
+      _camera = CameraController(cameras[0], ResolutionPreset.low,
+          imageFormatGroup: ImageFormatGroup.bgra8888);
+
       print('ready to start');
-      ImagePicker picker = ImagePicker();
-      XFile? file = await picker.pickImage(source: ImageSource.gallery);
-      print('file location: ${(file!.path)}');
+      // ImagePicker picker = ImagePicker();
+      // XFile? file = await picker.pickImage(source: ImageSource.gallery);
+      // print('file location: ${(file!.path)}');
+      await _camera.initialize();
+      _camera.startImageStream((image) => _cameraImage = image);
 
       final InputImage inputImage;
       final textRecognizer =
           TextRecognizer(script: TextRecognitionScript.latin);
-      final RecognizedText recognizedText = await textRecognizer
-          .processImage(InputImage.fromFilePath(file!.path));
 
-      String text = recognizedText.text;
-      for (TextBlock block in recognizedText.blocks) {
-        final Rect rect = block.boundingBox;
-        final cornerPoints = block.cornerPoints;
-        final String text = block.text;
-        final List<String> languages = block.recognizedLanguages;
+      Timer t = Timer.periodic(const Duration(seconds: 1), (timer) async {
+        InputImage? img = getInputImage(_cameraImage);
+        if (img == null || timer.tick < 5) return;
 
-        for (TextLine line in block.lines) {
-          // Same getters as TextBlock
-          for (TextElement element in line.elements) {
+        final RecognizedText recognizedText =
+            await textRecognizer.processImage(img);
+
+        String text = recognizedText.text;
+        for (TextBlock block in recognizedText.blocks) {
+          final Rect rect = block.boundingBox;
+          final cornerPoints = block.cornerPoints;
+          final String text = block.text;
+          final List<String> languages = block.recognizedLanguages;
+
+          print('made it here');
+          texts = '';
+          for (TextLine line in block.lines) {
             // Same getters as TextBlock
+            for (TextElement element in line.elements) {
+              // Same getters as TextBlock
+              print('TEXTS: ${element.text}');
+              texts += '${element.text}\n';
+            }
           }
+          setState(() {});
         }
-      }
+      });
       textRecognizer.close();
     }();
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -88,31 +131,11 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
             Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+              texts,
             ),
           ],
         ),
@@ -120,8 +143,44 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.camera_alt),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  InputImage? getInputImage(CameraImage? cameraImage) {
+    if (cameraImage == null) return null;
+
+    final WriteBuffer allBytes = WriteBuffer();
+    for (Plane plane in cameraImage.planes) {
+      allBytes.putUint8List(plane.bytes);
+    }
+    final bytes = allBytes.done().buffer.asUint8List();
+
+    final Size imageSize =
+        Size(cameraImage.width.toDouble(), cameraImage.height.toDouble());
+
+    final InputImageRotation imageRotation = InputImageRotation.rotation0deg;
+
+    final InputImageFormat inputImageFormat = InputImageFormat.bgra8888;
+
+    final planeData = cameraImage.planes.map(
+      (Plane plane) {
+        return InputImagePlaneMetadata(
+          bytesPerRow: plane.bytesPerRow,
+          height: plane.height,
+          width: plane.width,
+        );
+      },
+    ).toList();
+
+    final inputImageData = InputImageData(
+      size: imageSize,
+      imageRotation: imageRotation,
+      inputImageFormat: inputImageFormat,
+      planeData: planeData,
+    );
+
+    return InputImage.fromBytes(bytes: bytes, inputImageData: inputImageData);
   }
 }

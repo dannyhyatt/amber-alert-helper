@@ -1,9 +1,43 @@
 PODS:
+  - camera_avfoundation (0.0.1):
+    - Flutter
+  - cloud_functions (3.3.9):
+    - Firebase/Functions (= 9.6.0)
+    - firebase_core
+    - Flutter
   - Firebase/CoreOnly (9.6.0):
     - FirebaseCore (= 9.6.0)
+  - Firebase/Database (9.6.0):
+    - Firebase/CoreOnly
+    - FirebaseDatabase (~> 9.6.0)
+  - Firebase/Functions (9.6.0):
+    - Firebase/CoreOnly
+    - FirebaseFunctions (~> 9.6.0)
+  - Firebase/InAppMessaging (9.6.0):
+    - Firebase/CoreOnly
+    - FirebaseInAppMessaging (~> 9.6.0-beta)
+  - Firebase/Messaging (9.6.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 9.6.0)
   - firebase_core (1.24.0):
     - Firebase/CoreOnly (= 9.6.0)
     - Flutter
+  - firebase_database (9.1.6):
+    - Firebase/Database (= 9.6.0)
+    - firebase_core
+    - Flutter
+  - firebase_in_app_messaging (0.6.0-26):
+    - Firebase/InAppMessaging (= 9.6.0)
+    - firebase_core
+    - Flutter
+  - firebase_messaging (13.0.4):
+    - Firebase/Messaging (= 9.6.0)
+    - firebase_core
+    - Flutter
+  - FirebaseABTesting (9.6.0):
+    - FirebaseCore (~> 9.0)
+  - FirebaseAppCheckInterop (9.6.0)
+  - FirebaseAuthInterop (9.6.0)
   - FirebaseCore (9.6.0):
     - FirebaseCoreDiagnostics (~> 9.0)
     - FirebaseCoreInternal (~> 9.0)
@@ -14,8 +48,43 @@ PODS:
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/Logger (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
+  - FirebaseCoreExtension (9.6.0):
+    - FirebaseCore (~> 9.0)
   - FirebaseCoreInternal (9.6.0):
     - "GoogleUtilities/NSData+zlib (~> 7.7)"
+  - FirebaseDatabase (9.6.0):
+    - FirebaseCore (~> 9.0)
+    - leveldb-library (~> 1.22)
+  - FirebaseFunctions (9.6.0):
+    - FirebaseAppCheckInterop (~> 9.0)
+    - FirebaseAuthInterop (~> 9.0)
+    - FirebaseCore (~> 9.0)
+    - FirebaseCoreExtension (~> 9.0)
+    - FirebaseMessagingInterop (~> 9.0)
+    - FirebaseSharedSwift (~> 9.0)
+    - GTMSessionFetcher/Core (< 3.0, >= 1.7)
+  - FirebaseInAppMessaging (9.6.0-beta):
+    - FirebaseABTesting (~> 9.0)
+    - FirebaseCore (~> 9.0)
+    - FirebaseInstallations (~> 9.0)
+    - GoogleUtilities/Environment (~> 7.7)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - FirebaseInstallations (9.6.0):
+    - FirebaseCore (~> 9.0)
+    - GoogleUtilities/Environment (~> 7.7)
+    - GoogleUtilities/UserDefaults (~> 7.7)
+    - PromisesObjC (~> 2.1)
+  - FirebaseMessaging (9.6.0):
+    - FirebaseCore (~> 9.0)
+    - FirebaseInstallations (~> 9.0)
+    - GoogleDataTransport (< 10.0.0, >= 9.1.4)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
+    - GoogleUtilities/Environment (~> 7.7)
+    - GoogleUtilities/Reachability (~> 7.7)
+    - GoogleUtilities/UserDefaults (~> 7.7)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - FirebaseMessagingInterop (9.6.0)
+  - FirebaseSharedSwift (9.6.0)
   - Flutter (1.0.0)
   - google_mlkit_commons (0.2.0):
     - Flutter
@@ -61,11 +130,21 @@ PODS:
     - GoogleToolboxForMac/Defines (= 2.3.2)
     - "GoogleToolboxForMac/NSString+URLArguments (= 2.3.2)"
   - "GoogleToolboxForMac/NSString+URLArguments (2.3.2)"
+  - GoogleUtilities/AppDelegateSwizzler (7.8.0):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
   - GoogleUtilities/Environment (7.8.0):
     - PromisesObjC (< 3.0, >= 1.2)
   - GoogleUtilities/Logger (7.8.0):
     - GoogleUtilities/Environment
+  - GoogleUtilities/Network (7.8.0):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
   - "GoogleUtilities/NSData+zlib (7.8.0)"
+  - GoogleUtilities/Reachability (7.8.0):
+    - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.8.0):
     - GoogleUtilities/Logger
   - GoogleUtilitiesComponents (1.1.0):
@@ -73,6 +152,7 @@ PODS:
   - GTMSessionFetcher/Core (1.7.2)
   - image_picker_ios (0.0.1):
     - Flutter
+  - leveldb-library (1.22.1)
   - MLImage (1.0.0-beta3)
   - MLKitCommon (7.0.0):
     - GoogleDataTransport (~> 9.0)
@@ -122,7 +202,12 @@ PODS:
   - Protobuf (3.21.7)
 
 DEPENDENCIES:
+  - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
+  - cloud_functions (from `.symlinks/plugins/cloud_functions/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
+  - firebase_database (from `.symlinks/plugins/firebase_database/ios`)
+  - firebase_in_app_messaging (from `.symlinks/plugins/firebase_in_app_messaging/ios`)
+  - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
   - google_mlkit_commons (from `.symlinks/plugins/google_mlkit_commons/ios`)
   - google_mlkit_text_recognition (from `.symlinks/plugins/google_mlkit_text_recognition/ios`)
@@ -131,15 +216,27 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Firebase
+    - FirebaseABTesting
+    - FirebaseAppCheckInterop
+    - FirebaseAuthInterop
     - FirebaseCore
     - FirebaseCoreDiagnostics
+    - FirebaseCoreExtension
     - FirebaseCoreInternal
+    - FirebaseDatabase
+    - FirebaseFunctions
+    - FirebaseInAppMessaging
+    - FirebaseInstallations
+    - FirebaseMessaging
+    - FirebaseMessagingInterop
+    - FirebaseSharedSwift
     - GoogleDataTransport
     - GoogleMLKit
     - GoogleToolboxForMac
     - GoogleUtilities
     - GoogleUtilitiesComponents
     - GTMSessionFetcher
+    - leveldb-library
     - MLImage
     - MLKitCommon
     - MLKitTextRecognition
@@ -154,8 +251,18 @@ SPEC REPOS:
     - Protobuf
 
 EXTERNAL SOURCES:
+  camera_avfoundation:
+    :path: ".symlinks/plugins/camera_avfoundation/ios"
+  cloud_functions:
+    :path: ".symlinks/plugins/cloud_functions/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
+  firebase_database:
+    :path: ".symlinks/plugins/firebase_database/ios"
+  firebase_in_app_messaging:
+    :path: ".symlinks/plugins/firebase_in_app_messaging/ios"
+  firebase_messaging:
+    :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
   google_mlkit_commons:
@@ -166,11 +273,27 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker_ios/ios"
 
 SPEC CHECKSUMS:
+  camera_avfoundation: 07c77549ea54ad95d8581be86617c094a46280d9
+  cloud_functions: 3cd07c4445edc98e17d5786922c3ebe71146c399
   Firebase: 5ae8b7cf8efce559a653aef0ad95bab3f427c351
   firebase_core: 7c28ecc1e5dd74e03829ac3e9ff5ba3314e737a9
+  firebase_database: 94413825cc5a295fb026dee09fe51a9ac1c08ad3
+  firebase_in_app_messaging: e038a52da7aa43dabe48d3000cefd0890fd2afc5
+  firebase_messaging: a42787dea8e7a8f96458ef8b1c159495f8aa1c97
+  FirebaseABTesting: 61826730ce9eee8781ba99a2b3420e9bce148dc9
+  FirebaseAppCheckInterop: d5ecda0c09f8069406643d6e0fa12c09d1b736e3
+  FirebaseAuthInterop: b6cf02117f13a8400c8c8b4421e12c6e850bcaf3
   FirebaseCore: 2082fffcd855f95f883c0a1641133eb9bbe76d40
   FirebaseCoreDiagnostics: 99a495094b10a57eeb3ae8efa1665700ad0bdaa6
+  FirebaseCoreExtension: e83465d1236b166d1d445bbf0e82b65acb30b73b
   FirebaseCoreInternal: bca76517fe1ed381e989f5e7d8abb0da8d85bed3
+  FirebaseDatabase: 3de19e533a73d45e25917b46aafe1dd344ec8119
+  FirebaseFunctions: f9d4e4161f1c3bc331e3fc71a32fc06debf54e7b
+  FirebaseInAppMessaging: 64f19fde7c3010c170af2c8c629bdb484a4ba642
+  FirebaseInstallations: 0a115432c4e223c5ab20b0dbbe4cbefa793a0e8e
+  FirebaseMessaging: a4d7910e4af663c9cbfc1071c5bef34651690949
+  FirebaseMessagingInterop: 348785028509e1a5a9af277123e7fc08b2d17306
+  FirebaseSharedSwift: 2269c2ddc7a5efb7fb5f3f3177e790613b52dfda
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   google_mlkit_commons: e9070f57232c3a3e4bd42fdfa621bb1f4bb3e709
   google_mlkit_text_recognition: 900d35cbb2d314c02ae0b23cba39bb284ca79327
@@ -181,6 +304,7 @@ SPEC CHECKSUMS:
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
   GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
   image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
+  leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   MLImage: 489dfec109f21da8621b28d476401aaf7a0d4ff4
   MLKitCommon: 20f4aca0ec2bb37cef2b9c211b50586817bac5d3
   MLKitTextRecognition: 46c6574e7db6452f5a426312c04a794c82d6fcf0

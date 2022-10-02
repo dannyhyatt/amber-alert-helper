@@ -39,6 +39,12 @@ dependencies:
   firebase_core: ^1.24.0
   google_mlkit_text_recognition: ^0.4.0
   image_picker: ^0.8.5+3
+  google_mlkit_commons: ^0.2.0
+  camera: ^0.10.0+3
+  firebase_in_app_messaging: ^0.6.0+26
+  firebase_messaging: ^13.0.4
+  cloud_functions: ^3.3.9
+  firebase_database: ^9.1.6
 
 dev_dependencies:
   flutter_test:
